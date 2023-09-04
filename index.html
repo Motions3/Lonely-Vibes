@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Thasadith:wght@400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #111212;
+            font-family: 'Thasadith', sans-serif;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            backdrop-filter: blur(2%);
+        }
+
+        /* Falling stars animation */
+        .star-container {
+            position: absolute;
+            top: -10px;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: #fff;
+            opacity: 1;
+            animation: fall 2s linear infinite, twinkle 0.5s alternate infinite;
+            filter: blur(5px);
+        }
+
+        /* Text with slow fade animation, blinking cursor */
+        .fade-text {
+            font-size: 20px;
+            animation: fade 5s infinite;
+            position: relative;
+            text-align: center;
+            cursor: pointer;
+            filter: blur(10px);
+            transition: filter 0.3s ease-in-out;
+            padding-bottom: 10px;
+        }
+
+        .fade-text:hover {
+            filter: blur(0);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 6px;
+            height: 20px;
+            background-color: #fff;
+            animation: blink 1s infinite;
+        }
+
+        /* SoundCloud song embed with pulsing orange glow */
+        .soundcloud-embed {
+            width: 200px;
+            height: 200px;
+            border: none;
+            animation: pulse 3s infinite;
+            filter: blur(10px);
+            transition: filter 0.3s ease-in-out;
+        }
+
+        .soundcloud-embed:hover {
+            filter: blur(0);
+        }
+
+        ::selection {
+        background-color: white; /* Change the selection background color to white */
+        color: #111212; /* Change the selection text color to the background color */
+        }
+
+        /* Ripple Effect */
+        .ripple-container {
+            position: relative;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            background-color: orange;
+            opacity: 0.2;
+            animation: ripple-effect 0.7s linear;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) translateX(0);
+            }
+            100% {
+                transform: translateY(110vh) translateX(-100px);
+            }
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fade {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 20px rgba(255, 165, 0, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(255, 165, 0, 0.6);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(255, 165, 0, 0.2);
+            }
+        }
+
+        @keyframes ripple-effect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Falling stars starting from above the viewport -->
+    <div class="star-container" id="starContainer"></div>
+
+    <!-- Text with Thasadith font, slow fade animation, blinking cursor -->
+    <div class="fade-text ripple-container" onclick="replaceText()">Hello there, you found me!<span class="cursor"></span></div>
+
+    <!-- Updated SoundCloud song embed with pulsing orange glow -->
+    <iframe class="soundcloud-embed" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1145106985&color=%23adadaa&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true" frameborder="no" allow="autoplay"></iframe>
+
+    <script>
+        let typingComplete = true;
+
+        function getRandomDelay() {
+            return Math.random() * 10;
+        }
+
+        const starContainer = document.getElementById('starContainer');
+
+        for (let i = 0; i < 16; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.top = '-10px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.animationDelay = getRandomDelay() + 's';
+            starContainer.appendChild(star);
+        }
+
+        let textIndex = 0;
+        const textOptions = [
+            "Hello, I found something you might like.",
+            "Oh, I didn't know you could click me...",
+            "Well, is it okay to ask you to stop?",
+            "Please, let's just enjoy the song together.",
+            "Okay, listen here buddy pal... you're starting to annoy me.",
+            "Are you really that bored, you rather annoy me than just vibe?",
+            "You are?",
+            "Well, why take it out on me?",
+            "...",
+            "......",
+            "..........",
+            "Fine, you win.",
+            " "
+        ];
+
+        function replaceText() {
+            if (typingComplete) {
+                typingComplete = false;
+                const textElement = document.querySelector('.fade-text');
+                textIndex = (textIndex + 1) % textOptions.length;
+                const newText = textOptions[textIndex];
+                textElement.textContent = '';
+                let charIndex = 0;
+
+                function typeWriter() {
+                    if (charIndex < newText.length) {
+                        textElement.textContent += newText.charAt(charIndex);
+                        charIndex++;
+                        setTimeout(typeWriter, 100);
+                    } else {
+                        typingComplete = true;
+                    }
+                }
+
+                typeWriter();
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener("click", function (e) {
+            if (!e.target.classList.contains("fade-text")) {
+                const ripple = document.createElement("div");
+                ripple.className = "ripple";
+                const rect = e.target.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                ripple.style.width = ripple.style.height = size + "px";
+                ripple.style.left = x + "px";
+                ripple.style.top = y + "px";
+                ripple.style.backgroundColor = getRandomColor();
+                document.body.appendChild(ripple);
+                ripple.addEventListener("animationend", () => {
+                    ripple.remove();
+                });
+            }
+        });
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    </script>
+    <script>
+        const parallaxElements = document.querySelectorAll('.fade-text, .soundcloud-embed');
+
+        document.addEventListener('mousemove', (e) => {
+            const parallaxMultiplier = 85; // Adjust the multiplier for the desired parallax effect
+            parallaxElements.forEach((element) => {
+                const x = (window.innerWidth / 2 - e.pageX) / parallaxMultiplier;
+                const y = (window.innerHeight / 2 - e.pageY) / parallaxMultiplier;
+                element.style.transform = `translateX(${x}px) translateY(${y}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
